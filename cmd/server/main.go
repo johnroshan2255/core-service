@@ -6,6 +6,8 @@ import (
 
 	"github.com/johnroshan2255/core-service/internal/config"
 	"github.com/johnroshan2255/core-service/internal/notification"
+	httptransport "github.com/johnroshan2255/core-service/internal/transport/http/notification"
+	grpctransport "github.com/johnroshan2255/core-service/internal/transport/grpc/notification"
 	"github.com/joho/godotenv"
 )
 
@@ -14,12 +16,13 @@ func main() {
 		log.Printf("Warning: .env file not found: %v", err)
 	}
 
-	cfg, err := config.Load()
-	if err != nil {
-		log.Fatalf("Failed to load configuration: %v", err)
-	}
+	cfg := config.LoadConfig()
 
-	notificationFactory, err := notification.NewFactory(cfg.Notification.Provider)
+	provider := cfg.NotificationProvider
+	if provider == "" {
+		provider = "email"
+	}
+	notificationFactory, err := notification.NewFactory(provider)
 	if err != nil {
 		log.Fatalf("Failed to create notification factory: %v", err)
 	}
@@ -30,12 +33,12 @@ func main() {
 
 	go func() {
 		defer wg.Done()
-		notification.StartHTTPServer(cfg.Server.Host, cfg.Server.Port, notificationService)
+		httptransport.StartHTTPServer(cfg, notificationService)
 	}()
 
 	go func() {
 		defer wg.Done()
-		notification.StartGRPCServer(cfg, notificationService)
+		grpctransport.StartGRPCServer(cfg, notificationService)
 	}()
 
 	wg.Wait()

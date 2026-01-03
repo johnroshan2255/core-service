@@ -24,8 +24,8 @@ func NewServer(cfg *config.Config) (*grpc.Server, net.Listener, error) {
 		grpc.StreamInterceptor(authInterceptor.StreamInterceptor()),
 	}
 
-	if cfg.GRPC.TLSEnabled {
-		cert, err := tls.LoadX509KeyPair(cfg.GRPC.TLSCertFile, cfg.GRPC.TLSKeyFile)
+	if cfg.TLSEnabled {
+		cert, err := tls.LoadX509KeyPair(cfg.TLSCertFile, cfg.TLSKeyFile)
 		if err != nil {
 			return nil, nil, fmt.Errorf("failed to load TLS certificates: %w", err)
 		}
@@ -45,10 +45,15 @@ func NewServer(cfg *config.Config) (*grpc.Server, net.Listener, error) {
 
 	grpcServer := grpc.NewServer(serverOpts...)
 
-	grpcAddr := fmt.Sprintf("%s:%s", cfg.GRPC.Host, cfg.GRPC.Port)
-	listener, err := net.Listen("tcp", grpcAddr)
+	grpcPort := cfg.GRPCPort
+	if grpcPort == "" {
+		grpcPort = ":9090"
+	} else if grpcPort[0] != ':' {
+		grpcPort = ":" + grpcPort
+	}
+	listener, err := net.Listen("tcp", grpcPort)
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to listen on %s: %w", grpcAddr, err)
+		return nil, nil, fmt.Errorf("failed to listen on %s: %w", grpcPort, err)
 	}
 
 	return grpcServer, listener, nil
@@ -59,5 +64,26 @@ func SetupServer(grpcServer *grpc.Server, service *notification.NotificationServ
 	handler := NewHandler(service)
 	notificationv1.RegisterNotificationServiceServer(grpcServer, handler)
 	log.Printf("Notification gRPC service registered")
+}
+
+// StartGRPCServer starts the gRPC server for notification service
+func StartGRPCServer(cfg *config.Config, service *notification.NotificationService) {
+	grpcServer, grpcListener, err := NewServer(cfg)
+	if err != nil {
+		log.Fatalf("failed to setup gRPC server: %v", err)
+	}
+
+	SetupServer(grpcServer, service)
+
+	grpcPort := cfg.GRPCPort
+	if grpcPort == "" {
+		grpcPort = ":9090"
+	} else if grpcPort[0] != ':' {
+		grpcPort = ":" + grpcPort
+	}
+	log.Printf("gRPC server (backend-to-backend) running on %s", grpcPort)
+	if err := grpcServer.Serve(grpcListener); err != nil {
+		log.Fatalf("failed to start gRPC server: %v", err)
+	}
 }
 
