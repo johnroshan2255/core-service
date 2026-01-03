@@ -135,6 +135,160 @@ func (x *UserCreatedResponse) GetMessage() string {
 	return ""
 }
 
+// DocumentExpiryRequest contains information about document expiry
+type DocumentExpiryRequest struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	UserUuid         string                 `protobuf:"bytes,1,opt,name=user_uuid,json=userUuid,proto3" json:"user_uuid,omitempty"`                         // UUID of the document owner
+	Email            string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`                                               // User's email address
+	DocumentName     string                 `protobuf:"bytes,3,opt,name=document_name,json=documentName,proto3" json:"document_name,omitempty"`             // Name of the document
+	DocumentCategory string                 `protobuf:"bytes,4,opt,name=document_category,json=documentCategory,proto3" json:"document_category,omitempty"` // Category of the document (warranty, pollution_certificate, etc.)
+	ExpiryDate       string                 `protobuf:"bytes,5,opt,name=expiry_date,json=expiryDate,proto3" json:"expiry_date,omitempty"`                   // Expiry date in ISO format
+	DaysUntilExpiry  int32                  `protobuf:"varint,6,opt,name=days_until_expiry,json=daysUntilExpiry,proto3" json:"days_until_expiry,omitempty"` // Days until expiry (negative if expired)
+	IsExpired        bool                   `protobuf:"varint,7,opt,name=is_expired,json=isExpired,proto3" json:"is_expired,omitempty"`                     // Whether the document has already expired
+	Message          string                 `protobuf:"bytes,8,opt,name=message,proto3" json:"message,omitempty"`                                           // Custom message about the expiry
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *DocumentExpiryRequest) Reset() {
+	*x = DocumentExpiryRequest{}
+	mi := &file_notification_v1_notification_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DocumentExpiryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DocumentExpiryRequest) ProtoMessage() {}
+
+func (x *DocumentExpiryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_notification_v1_notification_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DocumentExpiryRequest.ProtoReflect.Descriptor instead.
+func (*DocumentExpiryRequest) Descriptor() ([]byte, []int) {
+	return file_notification_v1_notification_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *DocumentExpiryRequest) GetUserUuid() string {
+	if x != nil {
+		return x.UserUuid
+	}
+	return ""
+}
+
+func (x *DocumentExpiryRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *DocumentExpiryRequest) GetDocumentName() string {
+	if x != nil {
+		return x.DocumentName
+	}
+	return ""
+}
+
+func (x *DocumentExpiryRequest) GetDocumentCategory() string {
+	if x != nil {
+		return x.DocumentCategory
+	}
+	return ""
+}
+
+func (x *DocumentExpiryRequest) GetExpiryDate() string {
+	if x != nil {
+		return x.ExpiryDate
+	}
+	return ""
+}
+
+func (x *DocumentExpiryRequest) GetDaysUntilExpiry() int32 {
+	if x != nil {
+		return x.DaysUntilExpiry
+	}
+	return 0
+}
+
+func (x *DocumentExpiryRequest) GetIsExpired() bool {
+	if x != nil {
+		return x.IsExpired
+	}
+	return false
+}
+
+func (x *DocumentExpiryRequest) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+// DocumentExpiryResponse confirms the notification was processed
+type DocumentExpiryResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // Whether the notification was sent successfully
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`  // Optional message about the notification
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DocumentExpiryResponse) Reset() {
+	*x = DocumentExpiryResponse{}
+	mi := &file_notification_v1_notification_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DocumentExpiryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DocumentExpiryResponse) ProtoMessage() {}
+
+func (x *DocumentExpiryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_notification_v1_notification_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DocumentExpiryResponse.ProtoReflect.Descriptor instead.
+func (*DocumentExpiryResponse) Descriptor() ([]byte, []int) {
+	return file_notification_v1_notification_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *DocumentExpiryResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *DocumentExpiryResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_notification_v1_notification_proto protoreflect.FileDescriptor
 
 const file_notification_v1_notification_proto_rawDesc = "" +
@@ -146,9 +300,24 @@ const file_notification_v1_notification_proto_rawDesc = "" +
 	"\busername\x18\x03 \x01(\tR\busername\"I\n" +
 	"\x13UserCreatedResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2u\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\xa2\x02\n" +
+	"\x15DocumentExpiryRequest\x12\x1b\n" +
+	"\tuser_uuid\x18\x01 \x01(\tR\buserUuid\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12#\n" +
+	"\rdocument_name\x18\x03 \x01(\tR\fdocumentName\x12+\n" +
+	"\x11document_category\x18\x04 \x01(\tR\x10documentCategory\x12\x1f\n" +
+	"\vexpiry_date\x18\x05 \x01(\tR\n" +
+	"expiryDate\x12*\n" +
+	"\x11days_until_expiry\x18\x06 \x01(\x05R\x0fdaysUntilExpiry\x12\x1d\n" +
+	"\n" +
+	"is_expired\x18\a \x01(\bR\tisExpired\x12\x18\n" +
+	"\amessage\x18\b \x01(\tR\amessage\"L\n" +
+	"\x16DocumentExpiryResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage2\xde\x01\n" +
 	"\x13NotificationService\x12^\n" +
-	"\x11NotifyUserCreated\x12#.notification.v1.UserCreatedRequest\x1a$.notification.v1.UserCreatedResponseBMZKgithub.com/johnroshan2255/core-service/proto/notification/v1;notificationv1b\x06proto3"
+	"\x11NotifyUserCreated\x12#.notification.v1.UserCreatedRequest\x1a$.notification.v1.UserCreatedResponse\x12g\n" +
+	"\x14NotifyDocumentExpiry\x12&.notification.v1.DocumentExpiryRequest\x1a'.notification.v1.DocumentExpiryResponseBMZKgithub.com/johnroshan2255/core-service/proto/notification/v1;notificationv1b\x06proto3"
 
 var (
 	file_notification_v1_notification_proto_rawDescOnce sync.Once
@@ -162,16 +331,20 @@ func file_notification_v1_notification_proto_rawDescGZIP() []byte {
 	return file_notification_v1_notification_proto_rawDescData
 }
 
-var file_notification_v1_notification_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_notification_v1_notification_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_notification_v1_notification_proto_goTypes = []any{
-	(*UserCreatedRequest)(nil),  // 0: notification.v1.UserCreatedRequest
-	(*UserCreatedResponse)(nil), // 1: notification.v1.UserCreatedResponse
+	(*UserCreatedRequest)(nil),     // 0: notification.v1.UserCreatedRequest
+	(*UserCreatedResponse)(nil),    // 1: notification.v1.UserCreatedResponse
+	(*DocumentExpiryRequest)(nil),  // 2: notification.v1.DocumentExpiryRequest
+	(*DocumentExpiryResponse)(nil), // 3: notification.v1.DocumentExpiryResponse
 }
 var file_notification_v1_notification_proto_depIdxs = []int32{
 	0, // 0: notification.v1.NotificationService.NotifyUserCreated:input_type -> notification.v1.UserCreatedRequest
-	1, // 1: notification.v1.NotificationService.NotifyUserCreated:output_type -> notification.v1.UserCreatedResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	2, // 1: notification.v1.NotificationService.NotifyDocumentExpiry:input_type -> notification.v1.DocumentExpiryRequest
+	1, // 2: notification.v1.NotificationService.NotifyUserCreated:output_type -> notification.v1.UserCreatedResponse
+	3, // 3: notification.v1.NotificationService.NotifyDocumentExpiry:output_type -> notification.v1.DocumentExpiryResponse
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -188,7 +361,7 @@ func file_notification_v1_notification_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_notification_v1_notification_proto_rawDesc), len(file_notification_v1_notification_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

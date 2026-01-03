@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	NotificationService_NotifyUserCreated_FullMethodName = "/notification.v1.NotificationService/NotifyUserCreated"
+	NotificationService_NotifyUserCreated_FullMethodName    = "/notification.v1.NotificationService/NotifyUserCreated"
+	NotificationService_NotifyDocumentExpiry_FullMethodName = "/notification.v1.NotificationService/NotifyDocumentExpiry"
 )
 
 // NotificationServiceClient is the client API for NotificationService service.
@@ -30,6 +31,8 @@ const (
 type NotificationServiceClient interface {
 	// NotifyUserCreated is called when a new user is created
 	NotifyUserCreated(ctx context.Context, in *UserCreatedRequest, opts ...grpc.CallOption) (*UserCreatedResponse, error)
+	// NotifyDocumentExpiry is called when a document is about to expire or has expired
+	NotifyDocumentExpiry(ctx context.Context, in *DocumentExpiryRequest, opts ...grpc.CallOption) (*DocumentExpiryResponse, error)
 }
 
 type notificationServiceClient struct {
@@ -50,6 +53,16 @@ func (c *notificationServiceClient) NotifyUserCreated(ctx context.Context, in *U
 	return out, nil
 }
 
+func (c *notificationServiceClient) NotifyDocumentExpiry(ctx context.Context, in *DocumentExpiryRequest, opts ...grpc.CallOption) (*DocumentExpiryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DocumentExpiryResponse)
+	err := c.cc.Invoke(ctx, NotificationService_NotifyDocumentExpiry_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotificationServiceServer is the server API for NotificationService service.
 // All implementations must embed UnimplementedNotificationServiceServer
 // for forward compatibility.
@@ -58,6 +71,8 @@ func (c *notificationServiceClient) NotifyUserCreated(ctx context.Context, in *U
 type NotificationServiceServer interface {
 	// NotifyUserCreated is called when a new user is created
 	NotifyUserCreated(context.Context, *UserCreatedRequest) (*UserCreatedResponse, error)
+	// NotifyDocumentExpiry is called when a document is about to expire or has expired
+	NotifyDocumentExpiry(context.Context, *DocumentExpiryRequest) (*DocumentExpiryResponse, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -70,6 +85,9 @@ type UnimplementedNotificationServiceServer struct{}
 
 func (UnimplementedNotificationServiceServer) NotifyUserCreated(context.Context, *UserCreatedRequest) (*UserCreatedResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method NotifyUserCreated not implemented")
+}
+func (UnimplementedNotificationServiceServer) NotifyDocumentExpiry(context.Context, *DocumentExpiryRequest) (*DocumentExpiryResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method NotifyDocumentExpiry not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}
 func (UnimplementedNotificationServiceServer) testEmbeddedByValue()                             {}
@@ -110,6 +128,24 @@ func _NotificationService_NotifyUserCreated_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotificationService_NotifyDocumentExpiry_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DocumentExpiryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationServiceServer).NotifyDocumentExpiry(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotificationService_NotifyDocumentExpiry_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationServiceServer).NotifyDocumentExpiry(ctx, req.(*DocumentExpiryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotificationService_ServiceDesc is the grpc.ServiceDesc for NotificationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -120,6 +156,10 @@ var NotificationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "NotifyUserCreated",
 			Handler:    _NotificationService_NotifyUserCreated_Handler,
+		},
+		{
+			MethodName: "NotifyDocumentExpiry",
+			Handler:    _NotificationService_NotifyDocumentExpiry_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

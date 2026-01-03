@@ -8,6 +8,9 @@ option go_package = "github.com/johnroshan2255/core-service/proto/notification/v
 service NotificationService {
   // NotifyUserCreated is called when a new user is created
   rpc NotifyUserCreated(UserCreatedRequest) returns (UserCreatedResponse);
+  
+  // NotifyDocumentExpiry is called when a document is about to expire or has expired
+  rpc NotifyDocumentExpiry(DocumentExpiryRequest) returns (DocumentExpiryResponse);
 }
 
 // UserCreatedRequest contains information about a newly created user
@@ -21,5 +24,23 @@ message UserCreatedRequest {
 message UserCreatedResponse {
   bool success = 1;       // Whether the notification was sent successfully
   string message = 2;    // Optional message about the notification
+}
+
+// DocumentExpiryRequest contains information about document expiry
+message DocumentExpiryRequest {
+  string user_uuid = 1;      // UUID of the document owner
+  string email = 2;          // User's email address
+  string document_name = 3;  // Name of the document
+  string document_category = 4; // Category of the document (warranty, pollution_certificate, etc.)
+  string expiry_date = 5;    // Expiry date in ISO format
+  int32 days_until_expiry = 6; // Days until expiry (negative if expired)
+  bool is_expired = 7;       // Whether the document has already expired
+  string message = 8;       // Custom message about the expiry
+}
+
+// DocumentExpiryResponse confirms the notification was processed
+message DocumentExpiryResponse {
+  bool success = 1;       // Whether the notification was sent successfully
+  string message = 2;     // Optional message about the notification
 }
 

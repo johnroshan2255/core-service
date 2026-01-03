@@ -10,6 +10,19 @@ import (
 	"github.com/johnroshan2255/core-service/internal/config"
 )
 
+// SetupRoutes adds notification routes to the provided router
+func SetupRoutes(router *gin.Engine, notificationService *notification.NotificationService) {
+	notificationHandler := NewHandler(notificationService)
+
+	api := router.Group("/api/v1")
+	{
+		notifications := api.Group("/notifications")
+		{
+			notifications.POST("/user-created", notificationHandler.HandleUserCreated)
+		}
+	}
+}
+
 // SetupRouter creates and configures the HTTP router with notification routes
 func SetupRouter(notificationService *notification.NotificationService) *gin.Engine {
 	if os.Getenv("GIN_MODE") == "" {
@@ -20,19 +33,7 @@ func SetupRouter(notificationService *notification.NotificationService) *gin.Eng
 
 	router.SetTrustedProxies([]string{})
 
-	notificationHandler := NewHandler(notificationService)
-
-	api := router.Group("/api/v1")
-	{
-		api.GET("/health", func(c *gin.Context) {
-			c.JSON(200, gin.H{"status": "ok"})
-		})
-
-		notifications := api.Group("/notifications")
-		{
-			notifications.POST("/user-created", notificationHandler.HandleUserCreated)
-		}
-	}
+	SetupRoutes(router, notificationService)
 
 	return router
 }
@@ -47,7 +48,7 @@ func StartHTTPServer(cfg *config.Config, service *notification.NotificationServi
 	} else if port[0] != ':' {
 		port = ":" + port
 	}
-	log.Printf("HTTP server (frontend) running on %s", port)
+	log.Printf("HTTP server (notification) running on %s", port)
 	if err := router.Run(port); err != nil {
 		log.Fatalf("failed to start HTTP server: %v", err)
 	}
