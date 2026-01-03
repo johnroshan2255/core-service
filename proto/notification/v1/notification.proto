@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package notification.v1;
+
+option go_package = "github.com/johnroshan2255/core-service/proto/notification/v1;notificationv1";
+
+// NotificationService handles notifications for various events
+service NotificationService {
+  // NotifyUserCreated is called when a new user is created
+  rpc NotifyUserCreated(UserCreatedRequest) returns (UserCreatedResponse);
+}
+
+// UserCreatedRequest contains information about a newly created user
+message UserCreatedRequest {
+  string user_uuid = 1;  // UUID of the created user
+  string email = 2;      // User's email address
+  string username = 3;   // User's username
+}
+
+// UserCreatedResponse confirms the notification was processed
+message UserCreatedResponse {
+  bool success = 1;       // Whether the notification was sent successfully
+  string message = 2;    // Optional message about the notification
+}
+
