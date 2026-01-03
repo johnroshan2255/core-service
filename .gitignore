@@ -32,4 +32,4 @@ Thumbs.db
 *.log
 
 # Generated files
-*.pb.go
+# *.pb.go
